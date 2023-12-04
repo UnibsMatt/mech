@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
+import * as React from 'react';
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Home from "./pages/Home";
+import CustomBar from "./components/navbar/NavBar";
+import NoPage from "./pages/NoPage";
+import Store from "./pages/Store";
+import {createTheme, ThemeProvider} from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import Login from "./pages/Login";
 import './App.css';
 
+
+const darkTheme = createTheme({
+    palette: {
+        mode: 'dark',
+    },
+});
+
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    return (
+        <ThemeProvider theme={darkTheme}>
+            <CssBaseline/>
+            <BrowserRouter>
+                <CustomBar/>
+                <Routes>
+                    <Route path="/" element={<Login/>}/>
+                    <Route path="home" element={<Home/>}/>
+                    <Route path="store" element={<Store/>}/>
+                    <Route path="*" element={<NoPage/>}/>
+                </Routes>
+            </BrowserRouter>
+        </ThemeProvider>
+    );
 }
 
 export default App;

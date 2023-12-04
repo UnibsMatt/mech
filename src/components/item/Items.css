@@ -1,0 +1,10 @@
+.g {
+    /*padding: 4px;*/
+    /*margin: 10px;*/
+    /*background: red;*/
+    margin: 12px;
+    align-content: center;
+    vertical-align: center;
+    display: flex;
+    text-align: center;
+}
