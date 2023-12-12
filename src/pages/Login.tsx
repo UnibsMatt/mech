@@ -6,20 +6,15 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import {useNavigate} from "react-router-dom";
 
-export default function SignIn() {
-    const navigate = useNavigate();
+import { FormEventHandler } from 'react';
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-        navigate("home")
-    };
+interface SignInProp{
+    handleSubmit: FormEventHandler<HTMLFormElement>
+}
+
+export default function SignIn(props: SignInProp) {
+    const handle = props.handleSubmit;
 
     return (
         <div>
@@ -38,7 +33,7 @@ export default function SignIn() {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
+                    <Box component="form" onSubmit={handle} noValidate sx={{mt: 1}}>
                         <TextField
                             margin="normal"
                             required
