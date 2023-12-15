@@ -18,16 +18,13 @@ function CustomBar(): JSX.Element {
 
     const navItems = ['home', 'store', 'contact'];
     return (
-        <AppBar position="static">
+        <AppBar position="static" sx={{"background": "#444"}}>
             <Toolbar>
                 <BuildIcon></BuildIcon>
                 <Typography
                     variant="h3"
                     noWrap
-                    component="a"
-                    href="/"
                     sx={{
-
                         mr: 2,
                         fontWeight: 200,
                         fontFamily: 'verdana',

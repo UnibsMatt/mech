@@ -1,74 +1,63 @@
-import { useEffect, useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
-import CustomBar from "./components/navbar/NavBar";
-import NoPage from "./pages/NoPage";
-import Store from "./pages/Store";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import React, {useEffect, useState} from "react";
+import {createTheme, ThemeProvider} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Login from "./pages/Login";
 import './App.css';
-import { supabase } from "./client";
-import React from "react";
-const UserContext = React.createContext({
-    user:""
-});
+import {User} from "@supabase/supabase-js";
+import {supabase} from "./client";
+import Dashboard from "./pages/Dashboard";
 
 const darkTheme = createTheme({
     palette: {
-        mode: 'dark',
+        mode: 'light',
     },
 });
 
 
-
 function App() {
-    useEffect(()=>{
-        const getSession = async () => {
+    const [user, setUser] = useState<null | User>(null);
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        console.log("Start get user")
+        supabase.auth.getUser().then(({data: {user}}) => {
+            setUser(user)
+            setLoading(false)
+        })
+    }, [loading])
 
-            const { data: { user } } = await supabase.auth.getUser()
-            console.log(user)
-            setUser(user!.aud)
-        }
-
-        getSession()
-    }, [])
-
-    const [user, setUser] = useState<string | null>(null);
-
-    const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        setLoading(true)
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        async function login(formData : FormData) {
-            const eml = formData.get("email") === null ? "" : formData.get("email")!.toString();
-            const pass = formData.get("password") === null ? "": formData.get("password")!.toString();
 
-            const { data, error } = await supabase.auth.signInWithPassword(
-                {
-                    email: eml,
-                    password: pass,
-                }
-            )
-            
-            return data
-        }
-        const {user, session} = await login(data);
-        if (user !== null){
-            setUser(user?.id)
-        }
+        const eml = data.get("email") === null ? "" : data.get("email")!.toString();
+        const pass = data.get("password") === null ? "" : data.get("password")!.toString();
+
+        supabase.auth.signInWithPassword(
+            {
+                email: eml,
+                password: pass,
+            }
+        ).then(({data: {user, session}}) => {
+            setUser(user)
+            setLoading(false)
+        })
     };
 
     return (
-        <ThemeProvider theme={darkTheme}>
-            <CssBaseline />
-            
-            {
-            user ? <Home></Home> : <Login handleSubmit={handleSubmit}/>
+        <div>
+            <ThemeProvider theme={darkTheme}>
 
-            }
-            
+                <CssBaseline/>
+
+                {
+                    user ? <Dashboard/> : <Login handleSubmit={handleSubmit}/>
+                }
+
             </ThemeProvider>
+        </div>
     );
 }
+
 
 export default App;
